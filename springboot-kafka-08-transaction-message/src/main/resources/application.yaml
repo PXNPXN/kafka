@@ -1,0 +1,29 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      acks: all
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      transaction-id-prefix: demo. #事务编号前缀
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.cunshan.kafkademo.message
+        isolation:
+          level: read_committed # 读取已提交的信息
+    listener:
+      missing-topics-fatal: false
+logging:
+  level:
+    org:
+      springframework:
+        kafka: ERROR
+      apache:
+        kafka: ERROR

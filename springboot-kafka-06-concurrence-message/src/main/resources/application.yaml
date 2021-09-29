@@ -1,0 +1,29 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9093
+    # producer 配置:
+    producer:
+      acks: 1 # 0 不应答 1 只有leader节点应答 all leader 节点和所有的 follower 节点都应答
+      retries: 3 # 重试次数
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      batch-size: 16384
+      buffer-memory: 33554432
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.cunshan.kafkademo.message
+    listener:
+      missing-topics-fatal: false # 当消费监听的主题不存在的时候，默认会抛出异常，这里设置为 false 用于
+logging:
+  level:
+    org:
+      springframework:
+        kafka: debug
+      apache:
+        kafka: debug

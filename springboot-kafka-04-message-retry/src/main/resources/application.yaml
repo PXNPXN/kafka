@@ -1,0 +1,30 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      acks: 1 # 0-不应答 1-只有leader节点应答  all：leader节点和所有的follower节点共同应答
+      retries: 3 #重试次数
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer # 消费者 key 的序列化
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer # 消费者 value 的序列化
+      batch-size: 16384 # 每次批量发送消息的最大数量
+      buffer-memory: 33554432 # 每次批量发送消息的最大数量
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      enable-auto-commit: false # true-使用 kafka 默认自带的提交模式，false-使用 spring-kafka 的自动提交 offset 机制。建议设置为 false 使用 kafka-spring 的机制 分析见 https://juejin.im/entry/5a6e8dea518825732472710c
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.cunshan.kafkademo.message
+    listener:
+      type: BATCH #监听器类型，默认为 SINGLE：只监听单条消息  配置成 BATCH: 监听多条消息，批量消费
+      missing-topics-fatal: false #消费监听接口监听的主题不存在时，默认会报错，所以通过设置为 false 解决报错
+      concurrency: 10 # 每个消息监听器最大并发数，默认为 1 ，可以通过设置 n ，这样对于每个监听器就会使用 n 个线程消费消息，提高整体消费速度
+  logging:
+    level:
+      org:
+        springframework:
+          kafka: ERROR
+        apache: ERROR

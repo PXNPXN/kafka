@@ -1,0 +1,30 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9093 # broker ip地址，多个用逗号隔开
+    # producer 配置
+    producer:
+      acks: 1 # 0：表示不应答 1：表示只有leader节点应答 all：表示leader节点和所有的follower节点共同应答
+      retries: 3 # 表示重试次数
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      batch-size: 16384 # 每次批量发送消息的最大数量
+      buffer-memory: 33554432 #每次发送消息的最大容量
+    # consumer 配置
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: latest  # 每次消费的位置
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.cunshan.kafkademo.message
+    listener:
+      missing-topics-fatal: false # 消费监听接口监听的主题不存在时，默认报错，这里设置为false就是为了避免该问题
+logging: # 配置日志打印级别
+  level:
+    org:
+      springframework:
+        kafka: ERROR
+      apache:
+        kafka: ERROR

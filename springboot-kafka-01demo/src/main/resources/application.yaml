@@ -1,0 +1,29 @@
+spring:
+
+  kafka:
+    bootstrap-servers: localhost:9093  #指定 Kafka Broker 地址，可以设置多个，以逗号分隔
+    # Kafka Producer 配置项
+    producer:
+      acks: 1 # 0-不应答 1-leader节点应答 all-leader节点和所有的follower一起应答
+      retries: 3 # 发送失败时，重试的次数
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer #消息的key的序列化
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer #消息的value的序列化
+    # Kafka Consumer 配置项
+    consumer:
+      auto-offset-reset: earliest # 设置消费者分组最初的消费进度为 earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.cunshan.springboot.lab01.kafkademo.message
+    listener:
+      missing-topics-fatal: false # 消费者监听接口监听的主题不存在时，默认会报错，所有通过设置为 false，解决报错
+logging:
+  level:
+    org:
+      springframework: # spring-kafka INFO 日志太多了，所以我们限制只打印 ERROR 级别
+        kafka: ERROR
+      apache:
+        kafka: ERROR # kafka INFO 日志太多了，所以我们限制只打印 ERROR 级别
